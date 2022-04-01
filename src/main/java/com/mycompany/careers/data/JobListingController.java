@@ -62,4 +62,10 @@ public class JobListingController {
 
   }
 
+  // Get list of applicants
+  @GetMapping(path="/applicants")
+  public @ResponseBody Iterable<JobSeekerProfile> getApplicantList(){
+    return jobSeekerRepository.findAll();
+  }
+
 }
