@@ -1,12 +1,19 @@
 package com.mycompany.careers.data;
 
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
-public class JobPost {
+public class JobPost implements Comparable<JobPost>{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +22,10 @@ public class JobPost {
   private String jobDescription;
   private String location;
 
+  //@OneToMany (mappedBy = "jobSeekerId", targetEntity = JobSeekerProfile.class)
+  //@JoinColumn(name="jobSeekerId")
+  @ManyToMany(mappedBy = "jobPosts",fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+private Set<JobSeekerProfile> jobseekers;
 
   public long getId() {
     return id;
@@ -48,8 +59,26 @@ public class JobPost {
     this.location = location;
   }
 
+/*
+  public JobSeekerProfile getJobseekers() {
+    return jobseekers;
+  }
 
+  public void setJobseekers(JobSeekerProfile jobseekers) {
+    this.jobseekers = jobseekers;
+  }
+  */
 
+  public Set<JobSeekerProfile> getJobseekers() {
+    return jobseekers;
+  }
 
+  public void setJobseekers(Set<JobSeekerProfile> jobseekers) {
+    this.jobseekers = jobseekers;
+  }
 
+  @Override
+  public int compareTo(JobPost jobPost) {
+    return 0;
+  }
 }

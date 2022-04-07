@@ -1,31 +1,57 @@
 package com.mycompany.careers.data;
 
 import java.io.File;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
-public class JobSeekerProfile {
+public class JobSeekerProfile implements Comparable<JobPost>{
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long jobSeekerId;
   private String firstName;
   private String lastName;
   private String email;
   private long jobId;
+
+  public Set<JobPost> getJobPosts() {
+    return jobPosts;
+  }
+
+  public void setJobPosts(Set<JobPost> jobPosts) {
+    this.jobPosts = jobPosts;
+  }
+
+  @ManyToMany(cascade = CascadeType.MERGE)
+  //@JoinColumn(name="id", referencedColumnName = "jobId")
+  @JoinTable(
+    name="JobApplication",
+    joinColumns = @JoinColumn(name="jobSeekerId"),
+    inverseJoinColumns = @JoinColumn(name="id")
+  )
+  private Set<JobPost> jobPosts;
+
+
   @Lob
   private byte[] resume;
 
-  public long getId() {
-    return id;
+  public long getJobSeekerId() {
+    return jobSeekerId;
   }
 
-  public void setId(long id) {
-    this.id = id;
+  public void setJobSeekerId(long jobSeekerId) {
+    this.jobSeekerId = jobSeekerId;
   }
 
   public String getFirstName() {
@@ -52,6 +78,7 @@ public class JobSeekerProfile {
     this.email = email;
   }
 
+
   public long getJobId() {
     return jobId;
   }
@@ -67,4 +94,11 @@ public class JobSeekerProfile {
   public void setResume(byte[] resume) {
     this.resume = resume;
   }
+
+
+  @Override
+  public int compareTo(JobPost job){
+    return (int) (this.jobId - job.getId());
+  }
+
 }
